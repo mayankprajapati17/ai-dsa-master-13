@@ -63,7 +63,7 @@ export async function getGeminiResponse(prompt: string): Promise<string> {
       new Promise((_, reject) => 
         setTimeout(() => reject(new Error('Request timeout after 30 seconds')), 30000)
       )
-    ]) as any;
+    ]);
 
     if (!result) {
       throw new Error('No response received from Gemini API');
