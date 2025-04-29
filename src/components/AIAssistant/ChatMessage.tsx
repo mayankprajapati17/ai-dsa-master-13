@@ -31,9 +31,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         <div 
           className={`${
             isUser 
-              ? 'bg-dsapurple text-white rounded-t-lg rounded-bl-lg' 
-              : 'bg-secondary/80 text-white rounded-t-lg rounded-br-lg'
-          } px-4 py-3 shadow-sm`}
+              ? 'bg-dsapurple text-white rounded-t-lg rounded-bl-lg shadow-lg shadow-dsapurple/20' 
+              : 'bg-gradient-to-br from-secondary to-secondary/80 text-white rounded-t-lg rounded-br-lg shadow-lg'
+          } px-4 py-3`}
         >
           {isUser ? (
             <div className="text-white whitespace-pre-wrap break-words">
@@ -55,20 +55,22 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
                         language={match[1]}
                         PreTag="div"
                         {...props}
-                        className="rounded-md"
+                        className="rounded-md my-2 shadow-sm"
                       >
                         {String(children).replace(/\n$/, '')}
                       </SyntaxHighlighter>
                     );
                   },
                   // Style other markdown elements as needed
-                  h1: ({ node, ...props }) => <h1 className="text-xl font-bold my-2" {...props} />,
+                  h1: ({ node, ...props }) => <h1 className="text-xl font-bold my-3" {...props} />,
                   h2: ({ node, ...props }) => <h2 className="text-lg font-bold my-2" {...props} />,
                   h3: ({ node, ...props }) => <h3 className="text-base font-bold my-2" {...props} />,
                   p: ({ node, ...props }) => <p className="my-2" {...props} />,
-                  ul: ({ node, ...props }) => <ul className="list-disc pl-4 my-2" {...props} />,
-                  ol: ({ node, ...props }) => <ol className="list-decimal pl-4 my-2" {...props} />,
+                  ul: ({ node, ...props }) => <ul className="list-disc pl-5 my-2 space-y-1" {...props} />,
+                  ol: ({ node, ...props }) => <ol className="list-decimal pl-5 my-2 space-y-1" {...props} />,
                   li: ({ node, ...props }) => <li className="ml-2" {...props} />,
+                  a: ({ node, ...props }) => <a className="text-dsapurple underline hover:text-dsapurple-light" {...props} />,
+                  blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-dsapurple/50 pl-4 italic my-3" {...props} />,
                 }}
               >
                 {message.content}
@@ -76,7 +78,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
             </div>
           )}
         </div>
-        <span className={`text-xs text-gray-500 ${isUser ? 'text-right' : 'text-left'} block mt-1`}>
+        <span className={`text-xs text-gray-400 ${isUser ? 'text-right' : 'text-left'} block mt-1`}>
           {time}
         </span>
       </div>

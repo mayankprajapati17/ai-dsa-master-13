@@ -9,6 +9,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import ChatMessage from './ChatMessage';
 import SuggestedPrompts from './SuggestedPrompts';
 import { toast } from '@/components/ui/sonner';
+import { getGeminiResponse } from '@/utils/geminiService';
 
 // Types for our messages
 interface Message {
@@ -57,34 +58,21 @@ const AIAssistant = () => {
     }
 
     try {
-      // Simulate AI response with a delay
-      setTimeout(() => {
-        const aiResponse: Message = {
-          id: (Date.now() + 1).toString(),
-          content: generateMockResponse(userMessage.content),
-          role: 'assistant',
-          timestamp: new Date(),
-        };
-        
-        setMessages((prev) => [...prev, aiResponse]);
-        setIsLoading(false);
-      }, 1500);
+      // Call the Gemini API for response
+      const response = await getGeminiResponse(userMessage.content);
       
-      // In a real implementation, you would call your API here:
-      // const response = await fetch('/api/chat', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ 
-      //     message: input,
-      //     history: messages 
-      //   }),
-      // });
-      // const data = await response.json();
-      // setMessages(prev => [...prev, { id: Date.now().toString(), content: data.message, role: 'assistant' }]);
+      const aiResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        content: response,
+        role: 'assistant',
+        timestamp: new Date(),
+      };
       
-    } catch (error) {
+      setMessages((prev) => [...prev, aiResponse]);
+    } catch (error: any) {
       console.error('Error getting AI response:', error);
-      toast.error('Failed to get response from the AI');
+      toast.error(error.message || 'Failed to get response from the AI');
+    } finally {
       setIsLoading(false);
     }
   };
@@ -131,40 +119,29 @@ const AIAssistant = () => {
     }
   };
 
-  // Mock function to generate responses based on input
-  const generateMockResponse = (input: string): string => {
-    if (input.toLowerCase().includes('recursion')) {
-      return "# Recursion Explained\n\nRecursion is when a function calls itself to solve a smaller version of the same problem.\n\n```javascript\nfunction factorial(n) {\n  // Base case\n  if (n === 0 || n === 1) {\n    return 1;\n  }\n  // Recursive case\n  return n * factorial(n - 1);\n}\n\nconsole.log(factorial(5)); // 120\n```\n\nThis factorial function is a classic example of recursion. It calls itself with a smaller input until it reaches the base case.";
-    } else if (input.toLowerCase().includes('graph')) {
-      return "Here's a graph problem for you to practice:\n\n# Depth-First Search\n\nImplement a function to determine if there is a path between two nodes in a directed graph using depth-first search.\n\n```python\ndef has_path_dfs(graph, start, end, visited=None):\n    if visited is None:\n        visited = set()\n    \n    if start == end:\n        return True\n        \n    visited.add(start)\n    \n    for neighbor in graph[start]:\n        if neighbor not in visited:\n            if has_path_dfs(graph, neighbor, end, visited):\n                return True\n                \n    return False\n\n# Example usage\ngraph = {\n    'A': ['B', 'C'],\n    'B': ['D'],\n    'C': ['D'],\n    'D': ['E'],\n    'E': []\n}\n\nprint(has_path_dfs(graph, 'A', 'E'))  # True\n```";
-    } else if (input.toLowerCase().includes('bug') || input.toLowerCase().includes('debug')) {
-      return "I found the bug in your code. The issue is in the loop condition:\n\n```java\n// Original buggy code\nfor (int i = 0; i <= array.length; i++) {\n    sum += array[i];\n}\n\n// Fixed code\nfor (int i = 0; i < array.length; i++) {\n    sum += array[i];\n}\n```\n\nThe original loop was causing an ArrayIndexOutOfBoundsException because arrays in Java are 0-indexed, so the valid indices are from 0 to length-1. The loop condition should be `i < array.length` instead of `i <= array.length`.";
-    } else {
-      return "I'm your DSA Master AI assistant. I can help you learn data structures and algorithms by:\n\n- Explaining concepts with examples\n- Providing practice problems\n- Debugging your code\n- Giving tips on optimization\n\nTry asking about a specific algorithm or data structure!";
-    }
-  };
-
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
-      <Card className="bg-dsablue border border-white/10 shadow-xl">
-        <div className="p-4 border-b border-white/10">
+      <Card className="bg-gradient-to-br from-dsablue to-dsablue/90 border border-white/10 shadow-2xl overflow-hidden">
+        <div className="p-4 border-b border-white/10 bg-black/20">
           <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <Badge variant="secondary" className="mr-2 bg-dsapurple text-white">AI</Badge>
-              <h2 className="text-xl font-bold">DSA Master Assistant</h2>
+            <div className="flex items-center gap-3">
+              <div className="bg-dsapurple p-2 rounded-full flex items-center justify-center">
+                <Badge variant="outline" className="border-white text-white px-2 py-0.5 bg-transparent">AI</Badge>
+              </div>
+              <h2 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">DSA Master Assistant</h2>
             </div>
           </div>
         </div>
         
         <div className="flex flex-col h-[70vh] md:h-[65vh]">
           {/* Chat messages area */}
-          <ScrollArea className="flex-grow p-4">
+          <ScrollArea className="flex-grow p-4 bg-gradient-to-b from-transparent to-black/10">
             {messages.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-full text-center">
-                <div className="text-4xl mb-4">👋</div>
-                <h3 className="text-xl font-medium mb-2">Welcome to DSA Master Assistant</h3>
-                <p className="text-muted-foreground mb-6">
-                  Ask any question about data structures and algorithms
+              <div className="flex flex-col items-center justify-center h-full text-center p-6">
+                <div className="text-4xl mb-4 bg-dsapurple/20 p-4 rounded-full">👨‍💻</div>
+                <h3 className="text-xl font-bold mb-2 text-white">Welcome to DSA Master Assistant</h3>
+                <p className="text-gray-300 mb-6 max-w-md">
+                  Your AI-powered guide to mastering data structures and algorithms. Ask anything from basic concepts to complex problem-solving strategies.
                 </p>
               </div>
             ) : (
@@ -173,9 +150,9 @@ const AIAssistant = () => {
                   <ChatMessage key={message.id} message={message} />
                 ))}
                 {isLoading && (
-                  <div className="flex items-center gap-2 text-left p-4 w-3/4 rounded-lg bg-secondary my-2">
-                    <Loader size={16} className="animate-spin" />
-                    <p className="text-sm">DSA Master is thinking...</p>
+                  <div className="flex items-center gap-2 text-left p-4 rounded-lg bg-dsapurple/20 border border-dsapurple/30 my-2 animate-pulse">
+                    <Loader size={16} className="animate-spin text-dsapurple" />
+                    <p className="text-sm text-white">DSA Master is thinking...</p>
                   </div>
                 )}
               </>
@@ -184,7 +161,7 @@ const AIAssistant = () => {
           </ScrollArea>
           
           {/* Suggested prompts */}
-          <div className="p-4 border-t border-white/10">
+          <div className="p-4 border-t border-white/10 bg-black/20">
             <SuggestedPrompts onPromptClick={handlePromptClick} />
             
             {/* Input area */}
@@ -196,7 +173,7 @@ const AIAssistant = () => {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Ask a question about DSA..."
-                  className="min-h-[80px] resize-none pr-12 bg-dsablue-light border-white/10"
+                  className="min-h-[80px] resize-none pr-12 bg-dsablue-light border-white/10 focus:border-dsapurple focus:ring-1 focus:ring-dsapurple/50"
                   disabled={isLoading}
                 />
                 <div className="absolute bottom-2 right-16">
@@ -214,7 +191,7 @@ const AIAssistant = () => {
                 <Button
                   type="submit"
                   disabled={isLoading || !input.trim()}
-                  className="bg-dsapurple hover:bg-dsapurple-dark"
+                  className="bg-dsapurple hover:bg-dsapurple-dark shadow-lg shadow-dsapurple/20 transition-all duration-300"
                 >
                   {isLoading ? <Loader size={18} className="animate-spin" /> : <Send size={18} />}
                 </Button>

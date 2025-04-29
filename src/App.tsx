@@ -8,7 +8,6 @@ import Index from "./pages/Index";
 import TopicsPage from "./pages/TopicsPage";
 import CodeEditorPage from "./pages/CodeEditorPage";
 import AIAssistantPage from "./pages/AIAssistantPage";
-import AIChatPage from "./pages/AIChatPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,7 +23,6 @@ const App = () => (
           <Route path="/topics" element={<TopicsPage />} />
           <Route path="/code-editor" element={<CodeEditorPage />} />
           <Route path="/ai-assistant" element={<AIAssistantPage />} />
-          <Route path="/ai-chat" element={<AIChatPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
