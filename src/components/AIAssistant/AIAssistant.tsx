@@ -1,0 +1,230 @@
+
+import React, { useState, useRef, useEffect } from 'react';
+import { Send, Mic, MicOff, Loader } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import ChatMessage from './ChatMessage';
+import SuggestedPrompts from './SuggestedPrompts';
+import { toast } from '@/components/ui/sonner';
+
+// Types for our messages
+interface Message {
+  id: string;
+  content: string;
+  role: 'user' | 'assistant';
+  timestamp: Date;
+}
+
+const AIAssistant = () => {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Scroll to bottom whenever messages change
+  useEffect(() => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+
+  // Function to handle form submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!input.trim()) return;
+    
+    // Add user message to chat
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      content: input.trim(),
+      role: 'user',
+      timestamp: new Date(),
+    };
+    
+    setMessages((prev) => [...prev, userMessage]);
+    setInput('');
+    setIsLoading(true);
+    
+    // Focus back on textarea
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+
+    try {
+      // Simulate AI response with a delay
+      setTimeout(() => {
+        const aiResponse: Message = {
+          id: (Date.now() + 1).toString(),
+          content: generateMockResponse(userMessage.content),
+          role: 'assistant',
+          timestamp: new Date(),
+        };
+        
+        setMessages((prev) => [...prev, aiResponse]);
+        setIsLoading(false);
+      }, 1500);
+      
+      // In a real implementation, you would call your API here:
+      // const response = await fetch('/api/chat', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ 
+      //     message: input,
+      //     history: messages 
+      //   }),
+      // });
+      // const data = await response.json();
+      // setMessages(prev => [...prev, { id: Date.now().toString(), content: data.message, role: 'assistant' }]);
+      
+    } catch (error) {
+      console.error('Error getting AI response:', error);
+      toast.error('Failed to get response from the AI');
+      setIsLoading(false);
+    }
+  };
+
+  // Handle suggested prompt click
+  const handlePromptClick = (prompt: string) => {
+    setInput(prompt);
+    
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  };
+
+  // Handle textarea key press for Enter to submit
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit(e);
+    }
+  };
+
+  // Toggle voice input
+  const toggleVoiceInput = () => {
+    if (!isListening) {
+      // Check if browser supports speech recognition
+      if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+        setIsListening(true);
+        
+        // Simulating voice recognition with a timeout
+        toast.info('Listening...');
+        
+        // In a real app, you would implement speech recognition here
+        setTimeout(() => {
+          setInput(prev => prev + ' I am using voice input');
+          setIsListening(false);
+          toast.success('Voice input captured');
+        }, 2000);
+      } else {
+        toast.error('Speech recognition not supported in this browser');
+      }
+    } else {
+      setIsListening(false);
+      toast.info('Voice input stopped');
+    }
+  };
+
+  // Mock function to generate responses based on input
+  const generateMockResponse = (input: string): string => {
+    if (input.toLowerCase().includes('recursion')) {
+      return "# Recursion Explained\n\nRecursion is when a function calls itself to solve a smaller version of the same problem.\n\n```javascript\nfunction factorial(n) {\n  // Base case\n  if (n === 0 || n === 1) {\n    return 1;\n  }\n  // Recursive case\n  return n * factorial(n - 1);\n}\n\nconsole.log(factorial(5)); // 120\n```\n\nThis factorial function is a classic example of recursion. It calls itself with a smaller input until it reaches the base case.";
+    } else if (input.toLowerCase().includes('graph')) {
+      return "Here's a graph problem for you to practice:\n\n# Depth-First Search\n\nImplement a function to determine if there is a path between two nodes in a directed graph using depth-first search.\n\n```python\ndef has_path_dfs(graph, start, end, visited=None):\n    if visited is None:\n        visited = set()\n    \n    if start == end:\n        return True\n        \n    visited.add(start)\n    \n    for neighbor in graph[start]:\n        if neighbor not in visited:\n            if has_path_dfs(graph, neighbor, end, visited):\n                return True\n                \n    return False\n\n# Example usage\ngraph = {\n    'A': ['B', 'C'],\n    'B': ['D'],\n    'C': ['D'],\n    'D': ['E'],\n    'E': []\n}\n\nprint(has_path_dfs(graph, 'A', 'E'))  # True\n```";
+    } else if (input.toLowerCase().includes('bug') || input.toLowerCase().includes('debug')) {
+      return "I found the bug in your code. The issue is in the loop condition:\n\n```java\n// Original buggy code\nfor (int i = 0; i <= array.length; i++) {\n    sum += array[i];\n}\n\n// Fixed code\nfor (int i = 0; i < array.length; i++) {\n    sum += array[i];\n}\n```\n\nThe original loop was causing an ArrayIndexOutOfBoundsException because arrays in Java are 0-indexed, so the valid indices are from 0 to length-1. The loop condition should be `i < array.length` instead of `i <= array.length`.";
+    } else {
+      return "I'm your DSA Master AI assistant. I can help you learn data structures and algorithms by:\n\n- Explaining concepts with examples\n- Providing practice problems\n- Debugging your code\n- Giving tips on optimization\n\nTry asking about a specific algorithm or data structure!";
+    }
+  };
+
+  return (
+    <div className="container mx-auto px-4 py-8 max-w-5xl">
+      <Card className="bg-dsablue border border-white/10 shadow-xl">
+        <div className="p-4 border-b border-white/10">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <Badge variant="secondary" className="mr-2 bg-dsapurple text-white">AI</Badge>
+              <h2 className="text-xl font-bold">DSA Master Assistant</h2>
+            </div>
+          </div>
+        </div>
+        
+        <div className="flex flex-col h-[70vh] md:h-[65vh]">
+          {/* Chat messages area */}
+          <ScrollArea className="flex-grow p-4">
+            {messages.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full text-center">
+                <div className="text-4xl mb-4">👋</div>
+                <h3 className="text-xl font-medium mb-2">Welcome to DSA Master Assistant</h3>
+                <p className="text-muted-foreground mb-6">
+                  Ask any question about data structures and algorithms
+                </p>
+              </div>
+            ) : (
+              <>
+                {messages.map((message) => (
+                  <ChatMessage key={message.id} message={message} />
+                ))}
+                {isLoading && (
+                  <div className="flex items-center gap-2 text-left p-4 w-3/4 rounded-lg bg-secondary my-2">
+                    <Loader size={16} className="animate-spin" />
+                    <p className="text-sm">DSA Master is thinking...</p>
+                  </div>
+                )}
+              </>
+            )}
+            <div ref={chatEndRef} />
+          </ScrollArea>
+          
+          {/* Suggested prompts */}
+          <div className="p-4 border-t border-white/10">
+            <SuggestedPrompts onPromptClick={handlePromptClick} />
+            
+            {/* Input area */}
+            <form onSubmit={handleSubmit} className="mt-4">
+              <div className="flex items-end gap-2 relative">
+                <Textarea
+                  ref={textareaRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Ask a question about DSA..."
+                  className="min-h-[80px] resize-none pr-12 bg-dsablue-light border-white/10"
+                  disabled={isLoading}
+                />
+                <div className="absolute bottom-2 right-16">
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    onClick={toggleVoiceInput}
+                    disabled={isLoading}
+                    className="text-dsapurple hover:text-dsapurple-light"
+                  >
+                    {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+                  </Button>
+                </div>
+                <Button
+                  type="submit"
+                  disabled={isLoading || !input.trim()}
+                  className="bg-dsapurple hover:bg-dsapurple-dark"
+                >
+                  {isLoading ? <Loader size={18} className="animate-spin" /> : <Send size={18} />}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+};
+
+export default AIAssistant;

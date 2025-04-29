@@ -41,7 +41,7 @@ const Navbar = () => {
                 <Code className="inline-block mr-1" size={16} />
                 Code Editor
               </Link>
-              <Link to="#" className="nav-link">
+              <Link to="/ai-assistant" className={`nav-link ${isActive('/ai-assistant') ? 'nav-link-active' : ''}`}>
                 <Brain className="inline-block mr-1" size={16} />
                 AI Assistant
               </Link>
@@ -78,7 +78,7 @@ const Navbar = () => {
               <Code className="inline-block mr-2" size={16} />
               Code Editor
             </Link>
-            <Link to="#" className="nav-link block">
+            <Link to="/ai-assistant" className={`nav-link block ${isActive('/ai-assistant') ? 'nav-link-active' : ''}`}>
               <Brain className="inline-block mr-2" size={16} />
               AI Assistant
             </Link>
