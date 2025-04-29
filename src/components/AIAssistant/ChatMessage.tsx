@@ -43,9 +43,13 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
             <div className="markdown-body text-white">
               <ReactMarkdown
                 components={{
-                  code({ node, inline, className, children, ...props }) {
+                  code({ node, className, children, ...props }) {
                     const match = /language-(\w+)/.exec(className || '');
-                    return !inline && match ? (
+                    return !match ? (
+                      <code className="bg-dsablue px-1 py-0.5 rounded-sm" {...props}>
+                        {children}
+                      </code>
+                    ) : (
                       <SyntaxHighlighter
                         style={dracula}
                         language={match[1]}
@@ -55,10 +59,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
                       >
                         {String(children).replace(/\n$/, '')}
                       </SyntaxHighlighter>
-                    ) : (
-                      <code className="bg-dsablue px-1 py-0.5 rounded-sm" {...props}>
-                        {children}
-                      </code>
                     );
                   },
                   // Style other markdown elements as needed
