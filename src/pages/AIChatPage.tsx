@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import AIChatbot from '@/components/AIChat/AIChatbot';
 import Footer from '@/components/Footer';
@@ -10,7 +10,25 @@ import { toast } from '@/components/ui/sonner';
 
 const AIChatPage = () => {
   const [apiKey, setApiKey] = useState<string>('');
-  const [hasApiKey, setHasApiKey] = useState<boolean>(!!import.meta.env.VITE_GEMINI_API_KEY);
+  const [hasApiKey, setHasApiKey] = useState<boolean>(false);
+
+  // Check for API key in the environment or session storage on component mount
+  useEffect(() => {
+    const envApiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    const sessionApiKey = sessionStorage.getItem('gemini-api-key');
+    
+    if (envApiKey || sessionApiKey) {
+      setHasApiKey(true);
+      
+      // If there's a session key but no environment key, set it for this session
+      if (sessionApiKey && !envApiKey) {
+        // @ts-ignore - This is a runtime modification for demo purposes
+        window.env = window.env || {};
+        // @ts-ignore
+        window.env.VITE_GEMINI_API_KEY = sessionApiKey;
+      }
+    }
+  }, []);
 
   const handleApiKeySubmit = () => {
     if (!apiKey.trim()) {
