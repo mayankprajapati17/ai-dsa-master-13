@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, Loader2, Copy, Check } from 'lucide-react';
-import { getGeminiResponse } from '@/lib/gemini';
+import { getGeminiResponse } from '../../lib/gemini';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
