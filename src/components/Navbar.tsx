@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Menu, X, Code, BookOpen, Brain, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,31 +17,31 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <span className="text-dsapurple font-bold text-xl flex items-center">
+            <Link to="/" className="text-dsapurple font-bold text-xl flex items-center">
               <Code className="mr-2" size={24} />
               DSA Master
-            </span>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-center space-x-4">
-              <a href="#" className="nav-link nav-link-active">
+              <Link to="/" className="nav-link nav-link-active">
                 <Home className="inline-block mr-1" size={16} />
                 Home
-              </a>
-              <a href="#" className="nav-link">
+              </Link>
+              <Link to="/topics" className="nav-link">
                 <BookOpen className="inline-block mr-1" size={16} />
                 Topics
-              </a>
-              <a href="#" className="nav-link">
+              </Link>
+              <Link to="#" className="nav-link">
                 <Code className="inline-block mr-1" size={16} />
                 Code Editor
-              </a>
-              <a href="#" className="nav-link">
+              </Link>
+              <Link to="#" className="nav-link">
                 <Brain className="inline-block mr-1" size={16} />
                 AI Assistant
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -62,22 +63,22 @@ const Navbar = () => {
       {isMenuOpen && (
         <div className="md:hidden bg-dsablue/95 backdrop-blur-lg border-t border-white/10">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <a href="#" className="nav-link nav-link-active block">
+            <Link to="/" className="nav-link nav-link-active block">
               <Home className="inline-block mr-2" size={16} />
               Home
-            </a>
-            <a href="#" className="nav-link block">
+            </Link>
+            <Link to="/topics" className="nav-link block">
               <BookOpen className="inline-block mr-2" size={16} />
               Topics
-            </a>
-            <a href="#" className="nav-link block">
+            </Link>
+            <Link to="#" className="nav-link block">
               <Code className="inline-block mr-2" size={16} />
               Code Editor
-            </a>
-            <a href="#" className="nav-link block">
+            </Link>
+            <Link to="#" className="nav-link block">
               <Brain className="inline-block mr-2" size={16} />
               AI Assistant
-            </a>
+            </Link>
           </div>
         </div>
       )}
