@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Menu, X, Code, BookOpen, Brain, Home } from 'lucide-react';
+import { Menu, X, Code, BookOpen, Brain, Home, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -41,6 +41,10 @@ const Navbar = () => {
                 <Code className="inline-block mr-1" size={16} />
                 Code Editor
               </Link>
+              <Link to="/ai-chat" className={`nav-link ${isActive('/ai-chat') ? 'nav-link-active' : ''}`}>
+                <MessageCircle className="inline-block mr-1" size={16} />
+                AI Chat
+              </Link>
               <Link to="/ai-assistant" className={`nav-link ${isActive('/ai-assistant') ? 'nav-link-active' : ''}`}>
                 <Brain className="inline-block mr-1" size={16} />
                 AI Assistant
@@ -77,6 +81,10 @@ const Navbar = () => {
             <Link to="/code-editor" className={`nav-link block ${isActive('/code-editor') ? 'nav-link-active' : ''}`}>
               <Code className="inline-block mr-2" size={16} />
               Code Editor
+            </Link>
+            <Link to="/ai-chat" className={`nav-link block ${isActive('/ai-chat') ? 'nav-link-active' : ''}`}>
+              <MessageCircle className="inline-block mr-2" size={16} />
+              AI Chat
             </Link>
             <Link to="/ai-assistant" className={`nav-link block ${isActive('/ai-assistant') ? 'nav-link-active' : ''}`}>
               <Brain className="inline-block mr-2" size={16} />
