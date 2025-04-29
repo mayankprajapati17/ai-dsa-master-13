@@ -12,6 +12,15 @@ interface Message {
   error?: boolean;
 }
 
+// Add proper type definitions for the code component props
+interface CodeProps {
+  node?: any;
+  inline?: boolean;
+  className?: string;
+  children?: React.ReactNode;
+  [key: string]: any;
+}
+
 export const AIChat = () => {
   const [messages, setMessages] = useState<Message[]>([
     { text: "Hi! I'm your DSA learning assistant. How can I help you today?", isBot: true },
@@ -98,7 +107,7 @@ export const AIChat = () => {
                 <div className="prose max-w-none dark:prose-invert">
                   <ReactMarkdown
                     components={{
-                      code({ node, inline, className, children, ...props }) {
+                      code: ({ node, inline, className, children, ...props }: CodeProps) => {
                         const match = /language-(\w+)/.exec(className || '');
                         const codeText = String(children).replace(/\n$/, '');
                         
