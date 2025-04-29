@@ -98,12 +98,8 @@ See the LICENSE file for details.
 Built with 💙 by Your Name
 Have suggestions or questions? Open an issue or drop a star ⭐
 
-🌐 Live Demo
-👉 Check it out on Vercel
 
-yaml
-Copy
-Edit
+
 
 
 
