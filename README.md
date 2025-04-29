@@ -1,73 +1,114 @@
-# Welcome to your Lovable project
+# 🧠 DSA Master
 
-## Project info
+**Master Data Structures & Algorithms** with AI-powered learning paths, instant coding help, and an interactive code editor — all in one place.
 
-**URL**: https://lovable.dev/projects/b1147694-f315-41d2-8759-3dd2daa70b5e
+![DSA Master Banner](screenshots/banner.png)
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 🚀 Features
 
-**Use Lovable**
+- 📚 **Topic-Wise Curriculum** – Learn DSA step by step, from beginner to advanced.
+- 🤖 **AI Assistant** – Ask questions, get explanations, debug your code.
+- 💻 **Built-in Code Editor** – Write and run code with real-time feedback.
+- 🧩 **Interactive Practice** – Solve coding challenges with test case validation.
+- 🧠 **Smart Learning Paths** – Personalized journeys tailored to your skill level.
+- 🌙 **Dark Mode Support** – Seamless experience for day and night use.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/b1147694-f315-41d2-8759-3dd2daa70b5e) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 📸 Screenshots
 
-**Use your preferred IDE**
+### 🔹 Home Page  
+![Home](screenshots/home.png)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 🔹 Topics Page  
+![Topics](screenshots/topics.png)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### 🔹 Code Editor  
+![Code Editor](screenshots/editor.png)
 
-Follow these steps:
+### 🔹 AI Assistant  
+![AI Assistant](screenshots/ai-assistant.png)
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+---
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 🛠️ Tech Stack
 
-# Step 3: Install the necessary dependencies.
-npm i
+- **Frontend**: React.js, Tailwind CSS  
+- **Editor**: CodeMirror / Monaco Editor  
+- **AI Backend**: OpenAI API (or similar)  
+- **State Management**: Redux / Context API  
+- **Deployment**: Vercel / Netlify
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+---
+
+## ⚙️ Getting Started
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/your-username/dsa-master.git
+cd dsa-master
+2. Install dependencies
+bash
+Copy
+Edit
+npm install
+# or
+yarn install
+3. Run the development server
+bash
+Copy
+Edit
 npm run dev
-```
+Now open http://localhost:3000 to see the app.
 
-**Edit a file directly in GitHub**
+📁 Folder Structure
+bash
+Copy
+Edit
+/public
+/screenshots         -> Static images for documentation
+/src
+  /components        -> Reusable UI components
+  /pages             -> Main pages like Home, Topics, AI Assistant
+  /editor            -> Code editor integration
+  /chatbot           -> AI assistant logic
+  /styles            -> Tailwind and custom CSS
+🤝 Contributing
+Contributions are welcome!
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Fork this repo
 
-**Use GitHub Codespaces**
+Create a new branch: git checkout -b feature/your-feature-name
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Commit your changes: git commit -m "Added some feature"
 
-## What technologies are used for this project?
+Push to the branch: git push origin feature/your-feature-name
 
-This project is built with:
+Open a pull request
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+📄 License
+This project is licensed under the MIT License.
+See the LICENSE file for details.
 
-## How can I deploy this project?
+📬 Contact
+Built with 💙 by Your Name
+Have suggestions or questions? Open an issue or drop a star ⭐
 
-Simply open [Lovable](https://lovable.dev/projects/b1147694-f315-41d2-8759-3dd2daa70b5e) and click on Share -> Publish.
+🌐 Live Demo
+👉 Check it out on Vercel
 
-## Can I connect a custom domain to my Lovable project?
+yaml
+Copy
+Edit
 
-Yes, you can!
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+
+
+
+
+
