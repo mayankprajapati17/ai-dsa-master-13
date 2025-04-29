@@ -3,6 +3,7 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Copy, Check } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -31,8 +32,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         <div 
           className={`${
             isUser 
-              ? 'bg-dsapurple text-white rounded-t-lg rounded-bl-lg shadow-lg shadow-dsapurple/20' 
-              : 'bg-gradient-to-br from-secondary to-secondary/80 text-white rounded-t-lg rounded-br-lg shadow-lg'
+              ? 'bg-blue-600 text-white rounded-t-lg rounded-bl-lg shadow-lg' 
+              : 'bg-gray-200 text-gray-800 rounded-t-lg rounded-br-lg shadow-lg'
           } px-4 py-3`}
         >
           {isUser ? (
@@ -40,13 +41,13 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
               {message.content}
             </div>
           ) : (
-            <div className="markdown-body text-white">
+            <div className="markdown-body text-gray-800">
               <ReactMarkdown
                 components={{
                   code({ node, className, children, ...props }) {
                     const match = /language-(\w+)/.exec(className || '');
                     return !match ? (
-                      <code className="bg-dsablue px-1 py-0.5 rounded-sm" {...props}>
+                      <code className="bg-gray-100 px-1 py-0.5 rounded-sm" {...props}>
                         {children}
                       </code>
                     ) : (
@@ -61,7 +62,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
                       </SyntaxHighlighter>
                     );
                   },
-                  // Style other markdown elements as needed
                   h1: ({ node, ...props }) => <h1 className="text-xl font-bold my-3" {...props} />,
                   h2: ({ node, ...props }) => <h2 className="text-lg font-bold my-2" {...props} />,
                   h3: ({ node, ...props }) => <h3 className="text-base font-bold my-2" {...props} />,
@@ -69,8 +69,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
                   ul: ({ node, ...props }) => <ul className="list-disc pl-5 my-2 space-y-1" {...props} />,
                   ol: ({ node, ...props }) => <ol className="list-decimal pl-5 my-2 space-y-1" {...props} />,
                   li: ({ node, ...props }) => <li className="ml-2" {...props} />,
-                  a: ({ node, ...props }) => <a className="text-dsapurple underline hover:text-dsapurple-light" {...props} />,
-                  blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-dsapurple/50 pl-4 italic my-3" {...props} />,
+                  a: ({ node, ...props }) => <a className="text-blue-600 underline hover:text-blue-800" {...props} />,
+                  blockquote: ({ node, ...props }) => <blockquote className="border-l-4 border-gray-300 pl-4 italic my-3" {...props} />,
                 }}
               >
                 {message.content}

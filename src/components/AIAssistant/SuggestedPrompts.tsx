@@ -21,7 +21,7 @@ const SuggestedPrompts: React.FC<SuggestedPromptsProps> = ({ onPromptClick }) =>
           key={index}
           variant="outline"
           size="sm"
-          className="bg-black/20 hover:bg-dsapurple hover:text-white text-xs md:text-sm border-white/10 transition-all duration-300 text-gray-300 hover:border-dsapurple/50"
+          className="bg-black/20 hover:bg-blue-600 hover:text-white text-xs md:text-sm transition-all duration-300 text-gray-700"
           onClick={() => onPromptClick(prompt)}
         >
           {prompt.length > 30 ? `${prompt.substring(0, 30)}...` : prompt}

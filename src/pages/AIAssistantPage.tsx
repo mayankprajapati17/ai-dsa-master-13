@@ -54,8 +54,8 @@ const AIAssistantPage = () => {
       <main className="mt-16 flex-grow">
         {!hasApiKey ? (
           <div className="container max-w-md mx-auto px-4 py-8">
-            <Card className="p-6 bg-dsablue border border-white/10 shadow-xl">
-              <h2 className="text-xl font-bold mb-4">Enter your Gemini API Key</h2>
+            <Card className="p-6 bg-gray-900 border border-gray-700 shadow-xl">
+              <h2 className="text-xl font-bold mb-4 text-white">Enter your Gemini API Key</h2>
               <p className="mb-4 text-sm text-gray-300">
                 To use the DSA Master AI Assistant, you need a Google Gemini API key.
                 Get your API key from{" "}
@@ -63,7 +63,7 @@ const AIAssistantPage = () => {
                   href="https://ai.google.dev/" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-dsapurple hover:underline"
+                  className="text-blue-400 hover:underline"
                 >
                   Google AI Studio
                 </a>.
@@ -74,11 +74,11 @@ const AIAssistantPage = () => {
                   placeholder="Enter your Gemini API key" 
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
-                  className="bg-dsablue-light border-white/10"
+                  className="bg-gray-800 border-gray-600"
                 />
                 <Button 
                   onClick={handleApiKeySubmit}
-                  className="w-full bg-dsapurple hover:bg-dsapurple-dark"
+                  className="w-full bg-blue-600 hover:bg-blue-700"
                 >
                   Continue
                 </Button>
