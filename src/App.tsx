@@ -23,8 +23,6 @@ const App = () => (
           <Route path="/topics" element={<TopicsPage />} />
           <Route path="/code-editor" element={<CodeEditorPage />} />
           <Route path="/ai-assistant" element={<AIAssistantPage />} />
-          {/* Route that was causing 404 errors */}
-          <Route path="/ai-chat" element={<AIAssistantPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
