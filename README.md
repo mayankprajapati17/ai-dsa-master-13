@@ -47,9 +47,10 @@
 
 ### 1. Clone the repo
 
-```bash
+
 git clone https://github.com/your-username/dsa-master.git
 cd dsa-master
+
 2. Install dependencies
 bash
 Copy
