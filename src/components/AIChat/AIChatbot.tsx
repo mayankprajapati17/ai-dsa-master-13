@@ -8,6 +8,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import ChatMessage from './ChatMessage';
 import SuggestedPrompts from './SuggestedPrompts';
 import { toast } from '@/components/ui/sonner';
+import { getGeminiResponse } from '@/utils/geminiService';
 
 // Types for our messages
 interface Message {
@@ -58,35 +59,23 @@ const AIChatbot = () => {
     }
 
     try {
-      // Simulate AI response with a delay
-      setTimeout(() => {
-        setIsTyping(false);
-        const aiResponse: Message = {
-          id: (Date.now() + 1).toString(),
-          content: generateMockResponse(userMessage.content),
-          role: 'assistant',
-          timestamp: new Date(),
-        };
-        
-        setMessages((prev) => [...prev, aiResponse]);
-        setIsLoading(false);
-      }, 1500);
+      // Get AI response from Gemini API
+      const response = await getGeminiResponse(userMessage.content);
       
-      // In a real implementation, you would call your API here:
-      // const response = await fetch('/api/chat', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ 
-      //     message: input,
-      //     history: messages 
-      //   }),
-      // });
-      // const data = await response.json();
-      // setMessages(prev => [...prev, { id: Date.now().toString(), content: data.message, role: 'assistant' }]);
+      setIsTyping(false);
+      const aiResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        content: response,
+        role: 'assistant',
+        timestamp: new Date(),
+      };
       
-    } catch (error) {
+      setMessages((prev) => [...prev, aiResponse]);
+      setIsLoading(false);
+      
+    } catch (error: any) {
       console.error('Error getting AI response:', error);
-      toast.error('Failed to get response from the AI');
+      toast.error(error.message || 'Failed to get response from the AI');
       setIsLoading(false);
       setIsTyping(false);
     }
@@ -141,23 +130,6 @@ const AIChatbot = () => {
     }
   };
 
-  // Mock function to generate responses based on input
-  const generateMockResponse = (input: string): string => {
-    if (input.toLowerCase().includes('recursion')) {
-      return "# Recursion Explained\n\nRecursion is when a function calls itself to solve a smaller version of the same problem.\n\n```javascript\nfunction factorial(n) {\n  // Base case\n  if (n === 0 || n === 1) {\n    return 1;\n  }\n  // Recursive case\n  return n * factorial(n - 1);\n}\n\nconsole.log(factorial(5)); // 120\n```\n\nThis factorial function is a classic example of recursion. It calls itself with a smaller input until it reaches the base case.";
-    } else if (input.toLowerCase().includes('graph')) {
-      return "Here's a graph problem for you to practice:\n\n# Depth-First Search\n\nImplement a function to determine if there is a path between two nodes in a directed graph using depth-first search.\n\n```python\ndef has_path_dfs(graph, start, end, visited=None):\n    if visited is None:\n        visited = set()\n    \n    if start == end:\n        return True\n        \n    visited.add(start)\n    \n    for neighbor in graph[start]:\n        if neighbor not in visited:\n            if has_path_dfs(graph, neighbor, end, visited):\n                return True\n                \n    return False\n\n# Example usage\ngraph = {\n    'A': ['B', 'C'],\n    'B': ['D'],\n    'C': ['D'],\n    'D': ['E'],\n    'E': []\n}\n\nprint(has_path_dfs(graph, 'A', 'E'))  # True\n```";
-    } else if (input.toLowerCase().includes('bug') || input.toLowerCase().includes('debug')) {
-      return "I found the bug in your code. The issue is in the loop condition:\n\n```java\n// Original buggy code\nfor (int i = 0; i <= array.length; i++) {\n    sum += array[i];\n}\n\n// Fixed code\nfor (int i = 0; i < array.length; i++) {\n    sum += array[i];\n}\n```\n\nThe original loop was causing an ArrayIndexOutOfBoundsException because arrays in Java are 0-indexed, so the valid indices are from 0 to length-1. The loop condition should be `i < array.length` instead of `i <= array.length`.";
-    } else if (input.toLowerCase().includes('time complexity') || input.toLowerCase().includes('big o')) {
-      return "# Time Complexity and Big O Notation\n\nTime complexity is a way to describe how the runtime of an algorithm grows with the size of the input.\n\nHere are the common Big O notations, ordered from fastest to slowest:\n\n- O(1) - Constant Time: The algorithm takes the same amount of time regardless of the input size.\n  Example: Accessing an array element by index\n\n- O(log n) - Logarithmic Time: The algorithm's runtime grows logarithmically with the input size.\n  Example: Binary search\n\n- O(n) - Linear Time: The runtime grows directly proportional to the input size.\n  Example: Simple for loop through an array\n\n- O(n log n) - Linearithmic Time: Common in efficient sorting algorithms.\n  Example: Merge sort, quicksort (average case)\n\n- O(n²) - Quadratic Time: Nested loops over the data.\n  Example: Bubble sort, insertion sort\n\n- O(2^n) - Exponential Time: The runtime doubles with each addition to the input.\n  Example: Recursive calculation of Fibonacci numbers\n\n- O(n!) - Factorial Time: The runtime grows factorially with the input size.\n  Example: Brute force solution to the traveling salesman problem";
-    } else if (input.toLowerCase().includes('sort') || input.toLowerCase().includes('sorting')) {
-      return "# Sorting Algorithms Comparison\n\n| Algorithm | Best Case | Average Case | Worst Case | Space Complexity | Stable |\n|-----------|-----------|--------------|------------|-----------------|--------|\n| Bubble Sort | O(n) | O(n²) | O(n²) | O(1) | Yes |\n| Selection Sort | O(n²) | O(n²) | O(n²) | O(1) | No |\n| Insertion Sort | O(n) | O(n²) | O(n²) | O(1) | Yes |\n| Merge Sort | O(n log n) | O(n log n) | O(n log n) | O(n) | Yes |\n| Quick Sort | O(n log n) | O(n log n) | O(n²) | O(log n) | No |\n| Heap Sort | O(n log n) | O(n log n) | O(n log n) | O(1) | No |\n| Counting Sort | O(n+k) | O(n+k) | O(n+k) | O(n+k) | Yes |\n| Radix Sort | O(n*k) | O(n*k) | O(n*k) | O(n+k) | Yes |\n\nWhere:\n- n is the number of elements\n- k is the range of the input";
-    } else {
-      return "I'm your DSA Master AI assistant. I can help you learn data structures and algorithms by:\n\n- Explaining concepts with examples\n- Providing practice problems\n- Debugging your code\n- Giving tips on optimization\n\nTry asking me something specific about:\n- Data structures (arrays, linked lists, trees, graphs, etc.)\n- Algorithms (sorting, searching, dynamic programming, etc.)\n- Time and space complexity\n- Common coding patterns\n- Interview preparation";
-    }
-  };
-
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl">
       <Card className="bg-dsablue border border-white/10 shadow-xl">
@@ -166,6 +138,9 @@ const AIChatbot = () => {
             <div className="flex items-center gap-2">
               <div className="h-2 w-2 rounded-full bg-green-400 animate-pulse"></div>
               <h2 className="text-xl font-bold">DSA Master Assistant</h2>
+            </div>
+            <div className="text-xs bg-dsapurple/50 px-2 py-1 rounded-full">
+              Powered by Gemini AI
             </div>
           </div>
         </div>

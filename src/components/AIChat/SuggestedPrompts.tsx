@@ -8,9 +8,9 @@ interface SuggestedPromptsProps {
 }
 
 const suggestedPrompts = [
-  "Explain recursion with an example",
-  "Give me a graph problem for practice",
-  "What is the time complexity of quicksort?",
+  "Explain recursion with a factorial example",
+  "How does quicksort work?",
+  "What is the time complexity of binary search?",
   "Find the bug in this code: for(int i=0; i<=arr.length; i++) { sum += arr[i]; }",
   "Compare different sorting algorithms"
 ];
