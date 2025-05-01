@@ -1,5 +1,5 @@
 
-import { Navbar } from '../components/Navbar';
+import Navbar from '../components/Navbar';
 import { AIChat } from '../components/AIChat';
 
 export const AIAssistantPage = () => {
