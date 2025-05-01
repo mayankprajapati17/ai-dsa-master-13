@@ -132,7 +132,7 @@ export const AIChat = () => {
       
       <div 
         ref={chatContainerRef} 
-        className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth"
+        className="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth"
       >
         {messages.map((message, index) => (
           <div
@@ -140,7 +140,7 @@ export const AIChat = () => {
             className={`flex ${message.isBot ? 'justify-start' : 'justify-end'} animate-fade-in`}
           >
             <div
-              className={`max-w-[85%] p-4 rounded-lg shadow-sm ${
+              className={`max-w-[90%] p-5 rounded-lg shadow-md ${
                 message.isBot
                   ? message.error 
                     ? 'bg-red-100 text-red-800 border-l-4 border-red-500'
@@ -149,7 +149,7 @@ export const AIChat = () => {
               }`}
             >
               {message.isBot ? (
-                <div className="prose max-w-none dark:prose-invert">
+                <div className="prose prose-lg max-w-none dark:prose-invert">
                   <ReactMarkdown
                     components={{
                       code: ({ node, inline, className, children, ...props }: CodeProps) => {
@@ -157,10 +157,10 @@ export const AIChat = () => {
                         const codeText = String(children).replace(/\n$/, '');
                         
                         return !inline ? (
-                          <div className="relative group mt-4 mb-4">
+                          <div className="relative group mt-6 mb-6">
                             <button
                               onClick={() => copyToClipboard(codeText, index)}
-                              className="absolute right-2 top-2 p-1.5 rounded bg-gray-800 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                              className="absolute right-2 top-2 p-2 rounded bg-gray-800 text-white opacity-0 group-hover:opacity-100 transition-opacity"
                             >
                               {copiedIndex === index ? (
                                 <Check className="w-4 h-4" />
@@ -172,14 +172,14 @@ export const AIChat = () => {
                               language={match?.[1] || 'text'}
                               style={oneDark}
                               PreTag="div"
-                              className="!mt-0 rounded-lg"
+                              className="!mt-0 rounded-lg text-base"
                               {...props}
                             >
                               {codeText}
                             </SyntaxHighlighter>
                           </div>
                         ) : (
-                          <code className={`${className} bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded`} {...props}>
+                          <code className={`${className} bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded`} {...props}>
                             {children}
                           </code>
                         );
@@ -190,43 +190,43 @@ export const AIChat = () => {
                   </ReactMarkdown>
                 </div>
               ) : (
-                <div className="text-white">{message.text}</div>
+                <div className="text-white text-lg">{message.text}</div>
               )}
             </div>
           </div>
         ))}
         {isLoading && (
           <div className="flex justify-start">
-            <div className="max-w-[80%] p-4 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-l-4 border-purple-500 shadow-sm">
+            <div className="max-w-[90%] p-5 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-l-4 border-purple-500 shadow-md">
               <Loader2 className="w-6 h-6 animate-spin text-purple-500" />
             </div>
           </div>
         )}
       </div>
       
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div className="flex space-x-2">
+      <div className="p-5 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        <div className="flex space-x-3">
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Ask anything about DSA..."
-            className="flex-1 p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none dark:bg-gray-800 dark:text-white"
-            rows={2}
+            className="flex-1 p-4 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none text-base dark:bg-gray-800 dark:text-white"
+            rows={3}
             disabled={isLoading}
           />
           <button
             onClick={() => sendMessage()}
-            className={`bg-purple-600 text-white p-3 rounded-lg transition-colors ${
+            className={`bg-purple-600 text-white p-4 rounded-lg transition-colors ${
               isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-purple-700'
             } flex items-center justify-center`}
             disabled={isLoading}
             aria-label="Send message"
           >
             {isLoading ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <Loader2 className="w-6 h-6 animate-spin" />
             ) : (
-              <Send className="w-5 h-5" />
+              <Send className="w-6 h-6" />
             )}
           </button>
         </div>
