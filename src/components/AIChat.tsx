@@ -1,10 +1,11 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, Loader2, Copy, Check } from 'lucide-react';
+import { Send, Bot, Loader2, Copy, Check, Trash2 } from 'lucide-react';
 import { getGeminiResponse } from '../lib/gemini';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Button } from './ui/button';
 
 interface Message {
   text: string;
@@ -87,11 +88,29 @@ export const AIChat = () => {
     }
   };
 
+  const clearChat = () => {
+    setMessages([
+      { text: "Hi! I'm your DSA learning assistant. How can I help you today?", isBot: true },
+    ]);
+  };
+
   return (
     <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-800 rounded-lg">
-      <div className="p-4 bg-gray-900 text-white rounded-t-lg flex items-center space-x-2">
-        <Bot className="w-6 h-6 text-purple-300" />
-        <h2 className="font-semibold text-xl">AI DSA Assistant</h2>
+      <div className="p-4 bg-gray-900 text-white rounded-t-lg flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <Bot className="w-6 h-6 text-purple-300" />
+          <h2 className="font-semibold text-xl">AI DSA Assistant</h2>
+        </div>
+        <Button 
+          onClick={clearChat} 
+          variant="destructive" 
+          size="sm" 
+          className="flex items-center gap-1"
+          aria-label="Clear chat"
+        >
+          <Trash2 className="w-4 h-4" />
+          Clear Chat
+        </Button>
       </div>
       
       {messages.length === 1 && (

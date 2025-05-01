@@ -1,100 +1,95 @@
 
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from '@google/generative-ai';
 
-// Initialize the Gemini API with error handling
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+// Initialize the Google Generative AI with the API key
+const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || '');
 
-const RESPONSE_TEMPLATE = `
-Please analyze and execute the following code. Provide your response in this format:
+// Configure the model with safety settings
+const safetySettings = [
+  {
+    category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+  },
+  {
+    category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+  },
+  {
+    category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+  },
+  {
+    category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+    threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+  },
+];
 
-1. **If the user asks for a topic** (without providing code):
-   - **Theoretical Explanation**: Provide an in-depth explanation of the topic.
-   - **Java Code Example**: Include a relevant code snippet in Java to demonstrate the concept.
-   - **Use Cases**: Explain practical applications of the topic.
+// Configure the model with DSA-focused system prompt
+const generationConfig = {
+  temperature: 0.7,
+  topK: 40,
+  topP: 0.95,
+  maxOutputTokens: 4096,
+};
 
-   **Example Format:**
-   \`\`\`java
-   // Java code demonstrating the concept
-   public class Example {
-       public static void main(String[] args) {
-           System.out.println("Hello, Java!");
-       }
-   }
-   \`\`\`
+const systemPrompt = `
+You are an AI assistant specialized in Data Structures and Algorithms (DSA). You help students and developers understand DSA concepts, solve coding problems, and improve their algorithmic thinking. Your responses should be:
 
-2. **If the user provides code**:
-   1. **Code Analysis**
-      - Brief explanation of what the code does.
-      - Key components and their purpose.
-      - Logic flow explanation.
+1. Educational and informative
+2. Include code examples when appropriate (in multiple languages if requested)
+3. Provide step-by-step explanations
+4. Focus on time and space complexity analysis
+5. Mention optimization techniques when relevant
 
-   2. **Expected Output**
-      - Show the expected program output.
-      - Explain any conditions or variations.
+Your expertise covers:
+- Basic and advanced data structures (arrays, linked lists, trees, graphs, heaps, etc.)
+- Sorting and searching algorithms
+- Dynamic programming
+- Greedy algorithms
+- Graph algorithms
+- Recursion and backtracking
+- Bit manipulation
+- Time and space complexity analysis
+- Common coding patterns for interviews
+- Problem-solving approaches
 
-   3. **Code Quality & Improvements**
-      - Potential issues or edge cases.
-      - Suggested improvements.
-      - Best practices.
-
-   4. **Performance Analysis**
-      - Time complexity.
-      - Space complexity.
-      - Performance considerations.
-Please format code examples using markdown code blocks with proper syntax highlighting.
+Keep explanations clear for both beginners and experienced programmers.
 `;
 
-export async function getGeminiResponse(prompt: string): Promise<string> {
-  if (!import.meta.env.VITE_GEMINI_API_KEY) {
-    throw new Error('Gemini API key is not configured. Please check your .env file.');
-  }
-
+// Get response from Gemini API
+export const getGeminiResponse = async (prompt: string) => {
   try {
-    // Use the correct model name: 'gemini-pro'
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
-    
-    // Sanitize and format the prompt
-    const sanitizedPrompt = prompt.trim().replace(/\u0000/g, '');
-    const enhancedPrompt = `${RESPONSE_TEMPLATE}\n\n${sanitizedPrompt}`;
-    
-    // Add timeout and safety checks
-    const result = await Promise.race([
-      model.generateContent(enhancedPrompt),
-      new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Request timeout after 30 seconds')), 30000)
-      )
-    ]);
+    // For chat conversations
+    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 
-    if (!result) {
-      throw new Error('No response received from Gemini API');
-    }
+    const chat = model.startChat({
+      generationConfig,
+      safetySettings,
+      history: [
+        {
+          role: 'user',
+          parts: [{ text: 'Hi! I want to learn about DSA concepts.' }],
+        },
+        {
+          role: 'model',
+          parts: [{ text: 'Hello! I\'d be happy to help you learn about Data Structures and Algorithms (DSA). What specific concept would you like to start with?' }],
+        },
+      ],
+    });
 
+    // Add system prompt
+    await chat.sendMessage(systemPrompt);
+
+    const result = await chat.sendMessage(prompt);
     const response = await result.response;
     const text = response.text();
-    
-    if (!text) {
-      throw new Error('Empty response received from Gemini API');
-    }
-
     return text;
-  } catch (error: any) {
-    console.error('Gemini API Error:', error);
-    
-    // Handle specific error cases
-    if (error.message?.includes('API key')) {
-      throw new Error('Invalid API key. Please check your environment configuration.');
+  } catch (error: unknown) {
+    // Properly type check the error
+    if (error && typeof error === 'object' && 'message' in error) {
+      throw new Error(`Failed to get Gemini response: ${(error as Error).message}`);
+    } else {
+      throw new Error('Failed to get Gemini response: Unknown error');
     }
-    if (error.message?.includes('timeout')) {
-      throw new Error('The request took too long to complete. Please try again.');
-    }
-    if (error.message?.includes('quota')) {
-      throw new Error('API quota exceeded. Please try again later.');
-    }
-    if (error.message?.includes('blocked')) {
-      throw new Error('The request was blocked. Please check your input.');
-    }
-    
-    // Generic error with more context
-    throw new Error(`Failed to get AI response: ${error.message || 'Unknown error occurred'}`);
   }
-}
+};
