@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, Loader2, Copy, Check, Trash2 } from 'lucide-react';
 import { getGeminiResponse } from '../lib/gemini';
@@ -96,21 +97,11 @@ export const AIChat = () => {
 
   return (
     <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-800 rounded-lg">
-      <div className="p-4 bg-gray-900 text-white rounded-t-lg flex items-center justify-between">
+      <div className="p-4 bg-gray-900 text-white rounded-t-lg flex items-center">
         <div className="flex items-center space-x-2">
           <Bot className="w-6 h-6 text-purple-300" />
           <h2 className="font-semibold text-xl">AI DSA Assistant</h2>
         </div>
-        <Button 
-          onClick={clearChat} 
-          variant="destructive" 
-          size="sm" 
-          className="flex items-center gap-1"
-          aria-label="Clear chat"
-        >
-          <Trash2 className="w-4 h-4" />
-          Clear Chat
-        </Button>
       </div>
       
       {messages.length === 1 && (
@@ -132,8 +123,21 @@ export const AIChat = () => {
       
       <div 
         ref={chatContainerRef} 
-        className="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth"
+        className="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth relative"
       >
+        <div className="absolute top-2 right-2">
+          <Button 
+            onClick={clearChat} 
+            variant="outline" 
+            size="sm" 
+            className="flex items-center gap-1 bg-white hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600"
+            aria-label="Clear chat"
+          >
+            <Trash2 className="w-4 h-4" />
+            Clear Chat
+          </Button>
+        </div>
+
         {messages.map((message, index) => (
           <div
             key={index}
