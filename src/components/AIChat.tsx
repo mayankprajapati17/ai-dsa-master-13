@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, Loader2, Copy, Check, Trash2 } from 'lucide-react';
 import { getGeminiResponse } from '../lib/gemini';
@@ -6,6 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Button } from './ui/button';
+import { Textarea } from './ui/textarea';
 
 interface Message {
   text: string;
@@ -204,31 +204,32 @@ export const AIChat = () => {
         )}
       </div>
       
-      <div className="p-5 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div className="flex space-x-3">
-          <textarea
+      <div className="p-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        <div className="flex items-center space-x-2">
+          <Textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Ask anything about DSA..."
-            className="flex-1 p-4 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none text-base dark:bg-gray-800 dark:text-white"
-            rows={3}
+            className="flex-1 resize-none h-12 text-sm py-2 px-3 min-h-0"
             disabled={isLoading}
           />
-          <button
+          <Button
             onClick={() => sendMessage()}
-            className={`bg-purple-600 text-white p-4 rounded-lg transition-colors ${
+            className={`p-2 h-12 w-12 rounded-full ${
               isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-purple-700'
-            } flex items-center justify-center`}
+            }`}
             disabled={isLoading}
             aria-label="Send message"
+            size="icon"
+            variant="default"
           >
             {isLoading ? (
-              <Loader2 className="w-6 h-6 animate-spin" />
+              <Loader2 className="w-5 h-5 animate-spin" />
             ) : (
-              <Send className="w-6 h-6" />
+              <Send className="w-5 h-5" />
             )}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

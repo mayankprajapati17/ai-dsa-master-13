@@ -59,8 +59,8 @@ Keep explanations clear for both beginners and experienced programmers.
 // Get response from Gemini API
 export const getGeminiResponse = async (prompt: string) => {
   try {
-    // For chat conversations
-    const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
+    // For chat conversations - updated to use gemini-1.5-pro model
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
 
     const chat = model.startChat({
       generationConfig,
