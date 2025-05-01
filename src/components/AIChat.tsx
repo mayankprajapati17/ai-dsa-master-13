@@ -1,10 +1,10 @@
 
-import { Bot, Check, Copy, Loader2, Send } from 'lucide-react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Send, Bot, Loader2, Copy, Check } from 'lucide-react';
+import { getGeminiResponse } from '../lib/gemini';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { getGeminiResponse } from '../lib/gemini';
 
 interface Message {
   text: string;
@@ -30,16 +30,25 @@ export const AIChat = () => {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
+  const suggestedPrompts = [
+    "Explain time complexity analysis",
+    "How does quicksort work?",
+    "Difference between BFS and DFS",
+    "What are dynamic programming techniques?",
+    "Explain hash table collisions",
+    "Binary search tree operations"
+  ];
+
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
 
-  const sendMessage = async () => {
-    if (!input.trim() || isLoading) return;
+  const sendMessage = async (messageText: string = input) => {
+    if (!messageText.trim() || isLoading) return;
     
-    const userMessage = input.trim();
+    const userMessage = messageText.trim();
     setInput('');
     setMessages(prev => [...prev, { text: userMessage, isBot: false }]);
     setIsLoading(true);
@@ -79,28 +88,45 @@ export const AIChat = () => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-gray-50 rounded-lg">
+    <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-800 rounded-lg">
       <div className="p-4 bg-gray-900 text-white rounded-t-lg flex items-center space-x-2">
-        <Bot className="w-5 h-5" />
-        <h2 className="font-semibold">AI Assistant</h2>
+        <Bot className="w-6 h-6 text-purple-300" />
+        <h2 className="font-semibold text-xl">AI DSA Assistant</h2>
       </div>
+      
+      {messages.length === 1 && (
+        <div className="px-4 py-6 border-b border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-medium mb-3 text-center">Suggested Topics</h3>
+          <div className="flex flex-wrap gap-2 justify-center">
+            {suggestedPrompts.map((prompt, index) => (
+              <button
+                key={index}
+                onClick={() => sendMessage(prompt)}
+                className="bg-purple-100 hover:bg-purple-200 text-purple-800 px-3 py-2 rounded-lg text-sm transition-colors"
+              >
+                {prompt}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
       
       <div 
         ref={chatContainerRef} 
-        className="flex-1 overflow-y-auto p-4 space-y-4"
+        className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth"
       >
         {messages.map((message, index) => (
           <div
             key={index}
-            className={`flex ${message.isBot ? 'justify-start' : 'justify-end'}`}
+            className={`flex ${message.isBot ? 'justify-start' : 'justify-end'} animate-fade-in`}
           >
             <div
-              className={`max-w-[80%] p-3 rounded-lg ${
+              className={`max-w-[85%] p-4 rounded-lg shadow-sm ${
                 message.isBot
                   ? message.error 
-                    ? 'bg-red-100 text-red-800'
-                    : 'bg-gray-200 text-gray-800'
-                  : 'bg-blue-600 text-white'
+                    ? 'bg-red-100 text-red-800 border-l-4 border-red-500'
+                    : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-l-4 border-purple-500'
+                  : 'bg-purple-600 text-white'
               }`}
             >
               {message.isBot ? (
@@ -112,10 +138,10 @@ export const AIChat = () => {
                         const codeText = String(children).replace(/\n$/, '');
                         
                         return !inline ? (
-                          <div className="relative group">
+                          <div className="relative group mt-4 mb-4">
                             <button
                               onClick={() => copyToClipboard(codeText, index)}
-                              className="absolute right-2 top-2 p-1 rounded bg-gray-700 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                              className="absolute right-2 top-2 p-1.5 rounded bg-gray-800 text-white opacity-0 group-hover:opacity-100 transition-opacity"
                             >
                               {copiedIndex === index ? (
                                 <Check className="w-4 h-4" />
@@ -127,14 +153,14 @@ export const AIChat = () => {
                               language={match?.[1] || 'text'}
                               style={oneDark}
                               PreTag="div"
-                              className="!mt-0"
+                              className="!mt-0 rounded-lg"
                               {...props}
                             >
                               {codeText}
                             </SyntaxHighlighter>
                           </div>
                         ) : (
-                          <code className={className} {...props}>
+                          <code className={`${className} bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded`} {...props}>
                             {children}
                           </code>
                         );
@@ -145,37 +171,38 @@ export const AIChat = () => {
                   </ReactMarkdown>
                 </div>
               ) : (
-                message.text
+                <div className="text-white">{message.text}</div>
               )}
             </div>
           </div>
         ))}
         {isLoading && (
           <div className="flex justify-start">
-            <div className="max-w-[80%] p-3 rounded-lg bg-gray-200 text-gray-800">
-              <Loader2 className="w-5 h-5 animate-spin" />
+            <div className="max-w-[80%] p-4 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-l-4 border-purple-500 shadow-sm">
+              <Loader2 className="w-6 h-6 animate-spin text-purple-500" />
             </div>
           </div>
         )}
       </div>
       
-      <div className="p-4 border-t">
+      <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
         <div className="flex space-x-2">
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Ask anything about DSA..."
-            className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-            rows={1}
+            className="flex-1 p-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none dark:bg-gray-800 dark:text-white"
+            rows={2}
             disabled={isLoading}
           />
           <button
-            onClick={sendMessage}
-            className={`bg-blue-600 text-white p-2 rounded-lg transition-colors ${
-              isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'
-            }`}
+            onClick={() => sendMessage()}
+            className={`bg-purple-600 text-white p-3 rounded-lg transition-colors ${
+              isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-purple-700'
+            } flex items-center justify-center`}
             disabled={isLoading}
+            aria-label="Send message"
           >
             {isLoading ? (
               <Loader2 className="w-5 h-5 animate-spin" />
